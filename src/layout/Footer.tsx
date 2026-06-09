@@ -1,8 +1,8 @@
-import { Logo } from '../assets/logo/logo'
+import { Logo } from '../assets/logo/Logo'
 
 export const Footer = () => {
   return (
-    <footer className='bg-primary'>
+    <footer>
       <div className='mx-auto container space-y-8 px-3 py-12'>
         <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
           <div>
@@ -128,7 +128,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     1on1 Coaching{' '}
                   </a>
@@ -137,7 +137,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Company Review{' '}
                   </a>
@@ -146,7 +146,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     Accounts Review
                   </a>
                 </li>
@@ -154,7 +154,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     HR Consulting{' '}
                   </a>
@@ -163,7 +163,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     SEO Optimisation
                   </a>
                 </li>
@@ -177,7 +177,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     About{' '}
                   </a>
@@ -186,7 +186,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Meet the Team{' '}
                   </a>
@@ -195,7 +195,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     Accounts Review
                   </a>
                 </li>
@@ -209,7 +209,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Contact{' '}
                   </a>
@@ -218,7 +218,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     FAQs{' '}
                   </a>
@@ -227,7 +227,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Live Chat{' '}
                   </a>
@@ -242,7 +242,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Accessibility{' '}
                   </a>
@@ -251,7 +251,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Returns Policy{' '}
                   </a>
@@ -260,7 +260,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     {' '}
                     Refund Policy{' '}
                   </a>
@@ -269,7 +269,7 @@ export const Footer = () => {
                 <li>
                   <a
                     href='#'
-                    className='text-input transition hover:opacity-75'>
+                    className='text-secondary-foreground transition hover:opacity-75'>
                     Hiring-3 Statistics
                   </a>
                 </li>
