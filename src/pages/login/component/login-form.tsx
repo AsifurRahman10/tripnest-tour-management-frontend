@@ -1,59 +1,142 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
-  FieldLabel,
-  FieldSeparator
+  FieldLabel
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import z from 'zod'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
+import { useLoginMutation } from '../../../redux/features/auth/auth.api'
+import { toast } from 'sonner'
+import { Spinner } from '../../../components/shared/Spinner'
+import { useNavigate } from 'react-router'
+
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address.'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters.')
+    .max(100, 'Password must be at most 100 characters.')
+})
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'form'>) {
+  const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
+  const [login, { isLoading }] = useLoginMutation()
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  })
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    try {
+      const result = await login(data).unwrap()
+      if (result.success) {
+        toast.success('Login successful!')
+        navigate('/')
+      }
+    } catch (error: any) {
+      const message = error?.data?.message || 'Something went wrong'
+
+      toast.error(message)
+
+      if (message === 'User is not verified') {
+        navigate('/verify', { state: { email: data.email } })
+      }
+    }
+  }
   return (
     <form
       className={cn('flex flex-col gap-6', className)}
-      {...props}>
+      {...props}
+      onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
         <div className='flex flex-col items-center gap-1 text-center'>
           <h1 className='text-2xl font-bold'>Login to your account</h1>
-          <p className='text-sm text-balance text-muted-foreground'>
-            Enter your email below to login to your account
+          <p className='text-sm text-balance text-muted-foreground whitespace-nowrap'>
+            Enter your email and password below to login to your account
           </p>
         </div>
+        <Controller
+          name='email'
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor='email'>Email</FieldLabel>
+
+              <Input
+                {...field}
+                id='email'
+                type='email'
+                placeholder='m@example.com'
+                className='bg-background'
+                aria-invalid={fieldState.invalid}
+              />
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name='password'
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <div className='flex items-center'>
+                <FieldLabel htmlFor='password'>Password</FieldLabel>
+
+                <a
+                  href='#'
+                  className='ml-auto text-sm underline-offset-4 hover:underline'>
+                  Forgot your password?
+                </a>
+              </div>
+
+              <div className='relative'>
+                <Input
+                  {...field}
+                  id='password'
+                  type={showPassword ? 'text' : 'password'}
+                  className='bg-background pr-10'
+                  aria-invalid={fieldState.invalid}
+                />
+
+                <Button
+                  type='button'
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='absolute right-2 top-1 h-6 w-6'>
+                  {showPassword ? (
+                    <EyeOff className='h-3 w-3' />
+                  ) : (
+                    <Eye className='h-3 w-3' />
+                  )}
+                </Button>
+              </div>
+
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
         <Field>
-          <FieldLabel htmlFor='email'>Email</FieldLabel>
-          <Input
-            id='email'
-            type='email'
-            placeholder='m@example.com'
-            required
-            className='bg-background'
-          />
+          <Button type='submit'>{isLoading ? <Spinner /> : 'Login'}</Button>
         </Field>
-        <Field>
-          <div className='flex items-center'>
-            <FieldLabel htmlFor='password'>Password</FieldLabel>
-            <a
-              href='#'
-              className='ml-auto text-sm underline-offset-4 hover:underline'>
-              Forgot your password?
-            </a>
-          </div>
-          <Input
-            id='password'
-            type='password'
-            required
-            className='bg-background'
-          />
-        </Field>
-        <Field>
-          <Button type='submit'>Login</Button>
-        </Field>
-        <FieldSeparator>Or continue with</FieldSeparator>
+        {/* <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
           <Button
             variant='outline'
@@ -76,7 +159,15 @@ export function LoginForm({
               Sign up
             </a>
           </FieldDescription>
-        </Field>
+        </Field> */}
+        <FieldDescription className='text-center'>
+          Don&apos;t have an account?{' '}
+          <span
+            onClick={() => navigate('/register')}
+            className='cursor-pointer underline underline-offset-4'>
+            Sign up
+          </span>
+        </FieldDescription>
       </FieldGroup>
     </form>
   )

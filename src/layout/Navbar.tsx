@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/popover'
 import { Logo } from '../assets/logo/Logo'
 import { ModeToggle } from './ModeToggler'
+import { Link } from 'react-router'
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -110,16 +111,8 @@ export default function Navbar() {
           <ModeToggle />
           <Button
             asChild
-            className='text-sm'
-            size='sm'
-            variant='ghost'>
-            <a href='#'>Sign In</a>
-          </Button>
-          <Button
-            asChild
-            className='text-sm'
-            size='sm'>
-            <a href='#'>Get Started</a>
+            className='text-sm'>
+            <Link to='/login'>Sign In</Link>
           </Button>
         </div>
       </div>

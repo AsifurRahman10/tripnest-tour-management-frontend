@@ -62,11 +62,8 @@ export function SignupForm({
           'Registration successful! Please check your email to verify your account.'
         )
       }
-    } catch (error) {
-      console.log(error)
-      toast.error(
-        (error as any)?.message || 'Registration failed. Please try again.'
-      )
+    } catch (error: any) {
+      toast.error(error?.data?.message || 'Something went wrong')
     }
   }
   return (
