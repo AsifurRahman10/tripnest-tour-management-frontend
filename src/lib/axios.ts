@@ -2,7 +2,8 @@ import axios from 'axios'
 import { envVars } from '../config/config'
 
 export const axiosInstance = axios.create({
-  baseURL: envVars.BACKEND_URL
+  baseURL: envVars.BACKEND_URL,
+  withCredentials: true
 })
 
 // Add a request interceptor

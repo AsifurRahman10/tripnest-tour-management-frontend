@@ -7,7 +7,7 @@ import type {
 } from '@/types'
 import { baseApi } from '../../baseApi'
 
-const authApi = baseApi.injectEndpoints({
+export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     register: build.mutation<ISendResponse<IRegisterResponse>, IRegisterInfo>({
       query: (userInfo) => ({
@@ -22,6 +22,13 @@ const authApi = baseApi.injectEndpoints({
         method: 'POST',
         data: loginInfo
       })
+    }),
+    logout: build.mutation({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST'
+      }),
+      invalidatesTags: ['USER']
     }),
     sendOtp: build.mutation<ISendResponse<null>, { email: string }>({
       query: (userInfo) => ({
@@ -39,13 +46,22 @@ const authApi = baseApi.injectEndpoints({
         method: 'POST',
         data: userInfo
       })
+    }),
+    getMe: build.query({
+      query: () => ({
+        url: '/user/me',
+        method: 'GET'
+      }),
+      providesTags: ['USER']
     })
   })
 })
 
 export const {
+  useLogoutMutation,
   useRegisterMutation,
   useLoginMutation,
   useSendOtpMutation,
-  useVerifyOTPMutation
+  useVerifyOTPMutation,
+  useGetMeQuery
 } = authApi

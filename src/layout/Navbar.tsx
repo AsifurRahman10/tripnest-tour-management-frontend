@@ -13,6 +13,12 @@ import {
 import { Logo } from '../assets/logo/Logo'
 import { ModeToggle } from './ModeToggler'
 import { Link } from 'react-router'
+import {
+  authApi,
+  useGetMeQuery,
+  useLogoutMutation
+} from '../redux/features/auth/auth.api'
+import { useAppDispatch } from '../redux/hooks'
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -23,6 +29,13 @@ const navigationLinks = [
 ]
 
 export default function Navbar() {
+  const { data: me, isLoading } = useGetMeQuery(null)
+  const [logout] = useLogoutMutation()
+  const dispatch = useAppDispatch()
+  const handleSignOut = async () => {
+    await logout(undefined).unwrap()
+    dispatch(authApi.util.resetApiState())
+  }
   return (
     <header className='px-6'>
       <div className='flex h-16 items-center justify-between gap-4 container mx-auto'>
@@ -109,11 +122,13 @@ export default function Navbar() {
         {/* Right side */}
         <div className='flex items-center gap-2'>
           <ModeToggle />
-          <Button
-            asChild
-            className='text-sm'>
-            <Link to='/login'>Sign In</Link>
-          </Button>
+          {me?.data && !isLoading ? (
+            <Button onClick={handleSignOut}>Sign Out</Button>
+          ) : (
+            <Button asChild>
+              <Link to='/login'>Sign In</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>

@@ -14,9 +14,13 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { useRegisterMutation } from '../../../redux/features/auth/auth.api'
+import {
+  useRegisterMutation,
+  useSendOtpMutation
+} from '../../../redux/features/auth/auth.api'
 import { toast } from 'sonner'
 import { Spinner } from '../../../components/shared/Spinner'
+import { useNavigate } from 'react-router'
 
 const registrationSchema = z
   .object({
@@ -43,6 +47,8 @@ export function SignupForm({
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [register, { isLoading }] = useRegisterMutation()
+  const navigate = useNavigate()
+  const [sendOtp, { isLoading: isSendingOtp }] = useSendOtpMutation()
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -56,11 +62,14 @@ export function SignupForm({
     const { name, email, password } = data
     try {
       const result = await register({ name, email, password }).unwrap()
-      console.log(result)
       if (result.success) {
+        const sendOtpResult = await sendOtp({ email }).unwrap()
         toast.success(
           'Registration successful! Please check your email to verify your account.'
         )
+        if (sendOtpResult.success) {
+          navigate('/verify', { state: { email } })
+        }
       }
     } catch (error: any) {
       toast.error(error?.data?.message || 'Something went wrong')
@@ -187,7 +196,7 @@ export function SignupForm({
         />
         <Field className='pt-4'>
           <Button type='submit'>
-            {isLoading ? <Spinner /> : 'create account'}
+            {isLoading || isSendingOtp ? <Spinner /> : 'create account'}
           </Button>
         </Field>
         {/* <FieldSeparator>Or continue with</FieldSeparator> */}
