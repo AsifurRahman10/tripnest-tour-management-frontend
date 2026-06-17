@@ -14,7 +14,10 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { useLoginMutation } from '../../../redux/features/auth/auth.api'
+import {
+  useLoginMutation,
+  useSendOtpMutation
+} from '../../../redux/features/auth/auth.api'
 import { toast } from 'sonner'
 import { Spinner } from '../../../components/shared/Spinner'
 import { useNavigate } from 'react-router'
@@ -34,6 +37,7 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const [login, { isLoading }] = useLoginMutation()
+  const [sendOtp] = useSendOtpMutation()
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -44,17 +48,23 @@ export function LoginForm({
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const result = await login(data).unwrap()
+      console.log(result)
       if (result.success) {
         toast.success('Login successful!')
         navigate('/')
       }
     } catch (error: any) {
       const message = error?.data?.message || 'Something went wrong'
-
-      toast.error(message)
+      const toastId = toast.loading('Sending OTP')
 
       if (message === 'User is not verified') {
-        navigate('/verify', { state: { email: data.email } })
+        const sendOtpResult = await sendOtp({ email: data.email }).unwrap()
+        if (sendOtpResult.success) {
+          toast.success('OTP sent successfully!', { id: toastId })
+          navigate('/verify', { state: { email: data.email } })
+        }
+      } else {
+        toast.error(message)
       }
     }
   }
