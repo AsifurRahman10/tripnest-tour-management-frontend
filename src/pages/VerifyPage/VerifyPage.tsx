@@ -1,4 +1,5 @@
-import { useLocation } from 'react-router'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useLocation, useNavigate } from 'react-router'
 import loginImage from '@/assets/image/login.jpg'
 import {
   Card,
@@ -17,10 +18,57 @@ import {
 import { Field, FieldLabel } from '../../components/ui/field'
 import { Button } from '../../components/ui/button'
 import { RefreshCwIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import {
+  useSendOtpMutation,
+  useVerifyOTPMutation
+} from '../../redux/features/auth/auth.api'
+import { Spinner } from '../../components/shared/Spinner'
 
 export const VerifyPage = () => {
   const location = useLocation()
   const email = location.state?.email
+  const navigate = useNavigate()
+  const [timeLeft, setTimeLeft] = useState(120)
+  const [input, setInput] = useState('')
+  const [sendOtp] = useSendOtpMutation()
+  const [verifyOtp, { isLoading }] = useVerifyOTPMutation()
+  const onsubmit = async () => {
+    const verifyInfo = {
+      email,
+      otp: input
+    }
+    try {
+      const result = await verifyOtp(verifyInfo).unwrap()
+      if (result.success) {
+        toast.success('Verification successful!')
+        navigate('/')
+      }
+    } catch (error: any) {
+      toast.error(error.data.message)
+    }
+  }
+  const handleResend = async () => {
+    await sendOtp({ email: email })
+    toast.success('Verification code sent')
+    setTimeLeft(120)
+  }
+  useEffect(() => {
+    if (!email) {
+      navigate('/login')
+    }
+  }, [email, navigate])
+
+  useEffect(() => {
+    if (timeLeft <= 0) return
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1)
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [timeLeft])
   return (
     <div
       className='w-screen h-screen flex items-center justify-center bg-cover bg-center'
@@ -42,13 +90,21 @@ export const VerifyPage = () => {
                 Verification code
               </FieldLabel>
               <Button
+                type='button'
                 variant='outline'
-                size='xs'>
+                size='xs'
+                disabled={timeLeft > 0}
+                onClick={handleResend}>
                 <RefreshCwIcon />
-                Resend Code
+
+                {timeLeft > 0
+                  ? `Resend in ${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')}`
+                  : 'Resend Code'}
               </Button>
             </div>
             <InputOTP
+              value={input}
+              onChange={setInput}
               maxLength={6}
               id='otp-verification'
               required>
@@ -87,9 +143,9 @@ export const VerifyPage = () => {
         <CardFooter>
           <Field>
             <Button
-              type='submit'
+              onClick={onsubmit}
               className='w-full'>
-              Verify
+              {isLoading ? <Spinner /> : 'Verify'}
             </Button>
           </Field>
         </CardFooter>

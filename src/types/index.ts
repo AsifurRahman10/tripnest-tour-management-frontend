@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type {
   IRegisterInfo,
   IRegisterResponse,
@@ -11,4 +12,12 @@ export interface ISendResponse<T> {
   success: boolean
   message: string
   data: T
+}
+
+export interface ISendErrorResponse {
+  success: boolean
+  message: string
+  err: any
+  errorSource: any[]
+  stack: any
 }

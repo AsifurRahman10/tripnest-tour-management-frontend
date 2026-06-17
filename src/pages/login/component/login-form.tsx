@@ -37,6 +37,7 @@ export function LoginForm({
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const [login, { isLoading }] = useLoginMutation()
+  const [loginLoading, setLoginLoading] = useState(false)
   const [sendOtp] = useSendOtpMutation()
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -47,20 +48,21 @@ export function LoginForm({
   })
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
+      setLoginLoading(true)
       const result = await login(data).unwrap()
-      console.log(result)
       if (result.success) {
         toast.success('Login successful!')
         navigate('/')
       }
     } catch (error: any) {
       const message = error?.data?.message || 'Something went wrong'
-      const toastId = toast.loading('Sending OTP')
+      // const toastId = toast.loading('Sending OTP')
 
       if (message === 'User is not verified') {
         const sendOtpResult = await sendOtp({ email: data.email }).unwrap()
         if (sendOtpResult.success) {
-          toast.success('OTP sent successfully!', { id: toastId })
+          // toast.success('OTP sent successfully!', { id: toastId })
+          setLoginLoading(false)
           navigate('/verify', { state: { email: data.email } })
         }
       } else {
@@ -144,7 +146,9 @@ export function LoginForm({
           )}
         />
         <Field>
-          <Button type='submit'>{isLoading ? <Spinner /> : 'Login'}</Button>
+          <Button type='submit'>
+            {isLoading || loginLoading ? <Spinner /> : 'Login'}
+          </Button>
         </Field>
         {/* <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
