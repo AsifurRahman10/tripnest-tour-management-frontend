@@ -21,3 +21,12 @@ export interface ISendErrorResponse {
   errorSource: any[]
   stack: any
 }
+
+export interface ISidebarItem {
+  title: string
+  items: {
+    title: string
+    route: string
+    component: React.ComponentType
+  }[]
+}
