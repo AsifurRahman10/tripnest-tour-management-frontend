@@ -30,3 +30,5 @@ export interface ISidebarItem {
     component: React.ComponentType
   }[]
 }
+
+export type IRole = 'SUPER_ADMIN' | 'ADMIN' | 'USER'

@@ -1,3 +1,4 @@
-export const AddTourTypePage = () => {
+const AddTourTypePage = () => {
   return <div>AddTourTypePage</div>
 }
+export default AddTourTypePage

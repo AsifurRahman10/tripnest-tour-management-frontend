@@ -13,11 +13,15 @@ import {
   SidebarRail
 } from '@/components/ui/sidebar'
 import { Logo } from '@/assets/logo/Logo'
-import { adminSidebarItem } from '@/Router/adminSidebarItem'
+import { getSidebarItem } from '@/utils/getSidebarItem'
+import { useGetMeQuery } from '@/redux/features/auth/auth.api'
+import type { IRole } from '@/types'
 
 // This is sample data.
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: getMe } = useGetMeQuery(undefined)
+  const data = getSidebarItem(getMe?.data?.role as IRole)
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -27,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
-        {adminSidebarItem.map((item) => (
+        {data.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>

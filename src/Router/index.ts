@@ -6,6 +6,7 @@ import App from '@/App'
 import { DashboardLayout } from '@/layout/DashboardLayout'
 import { generateRoutes } from '@/utils/genrateRoutes'
 import { adminSidebarItem } from '@/Router/adminSidebarItem'
+import { userSidebarItem } from '@/Router/userSidebarItem'
 
 export const router = createBrowserRouter([
   {
@@ -26,12 +27,7 @@ export const router = createBrowserRouter([
   {
     path: '/user',
     Component: DashboardLayout,
-    children: [
-      {
-        // Component: App,
-        path: 'bookings'
-      }
-    ]
+    children: [...generateRoutes(userSidebarItem)]
   },
   {
     path: '/login',

@@ -19,13 +19,14 @@ import {
   useLogoutMutation
 } from '../redux/features/auth/auth.api'
 import { useAppDispatch } from '../redux/hooks'
+import { role } from '@/constant/role'
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { active: true, href: '#', label: 'Home' },
-  { href: '#', label: 'Features' },
-  { href: '#', label: 'Pricing' },
-  { href: '#', label: 'About' }
+  { href: '/', label: 'Home', role: 'public' },
+  { href: '/admin', label: 'Dashboard', role: role.admin },
+  { href: '/super-admin', label: 'Dashboard', role: role.superAdmin },
+  { href: '/user', label: 'Dashboard', role: role.user }
 ]
 
 export default function Navbar() {
@@ -36,6 +37,7 @@ export default function Navbar() {
     await logout(undefined).unwrap()
     dispatch(authApi.util.resetApiState())
   }
+  console.log(me?.data?.role)
   return (
     <header className='px-6'>
       <div className='flex h-16 items-center justify-between gap-4 container mx-auto'>
@@ -80,16 +82,26 @@ export default function Navbar() {
               <NavigationMenu className='max-w-none *:w-full'>
                 <NavigationMenuList className='flex-col items-start gap-0 md:gap-2'>
                   {navigationLinks.map((link) => (
-                    <NavigationMenuItem
-                      className='w-full'
-                      key={link.label}>
-                      <NavigationMenuLink
-                        active={link.active}
-                        className='py-1.5'
-                        href={link.href}>
-                        {link.label}
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
+                    <>
+                      {link.role === 'public' && (
+                        <NavigationMenuItem className='w-full'>
+                          <NavigationMenuLink
+                            className='py-1.5'
+                            href={link.href}>
+                            {link.label}
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      )}
+                      {link.role === me?.data?.role && (
+                        <NavigationMenuItem className='w-full'>
+                          <NavigationMenuLink
+                            className='py-1.5'
+                            href={link.href}>
+                            {link.label}
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      )}
+                    </>
                   ))}
                 </NavigationMenuList>
               </NavigationMenu>
@@ -106,14 +118,26 @@ export default function Navbar() {
             <NavigationMenu className='max-md:hidden'>
               <NavigationMenuList className='gap-2'>
                 {navigationLinks.map((link) => (
-                  <NavigationMenuItem key={link.label}>
-                    <NavigationMenuLink
-                      active={link.active}
-                      className='py-1.5 font-medium text-muted-foreground hover:text-primary'
-                      href={link.href}>
-                      {link.label}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
+                  <>
+                    {link.role === 'public' && (
+                      <NavigationMenuItem className='w-full'>
+                        <NavigationMenuLink
+                          className='py-1.5'
+                          href={link.href}>
+                          {link.label}
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                    {link.role === me?.data?.role && (
+                      <NavigationMenuItem className='w-full'>
+                        <NavigationMenuLink
+                          className='py-1.5'
+                          href={link.href}>
+                          {link.label}
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                  </>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
