@@ -25,7 +25,7 @@ import { role } from '@/constant/role'
 const navigationLinks = [
   { href: '/', label: 'Home', role: 'public' },
   { href: '/admin', label: 'Dashboard', role: role.admin },
-  { href: '/super-admin', label: 'Dashboard', role: role.superAdmin },
+  { href: '/admin', label: 'Dashboard', role: role.superAdmin },
   { href: '/user', label: 'Dashboard', role: role.user }
 ]
 

@@ -2,9 +2,7 @@ import type { ISidebarItem } from '@/types'
 import { lazy } from 'react'
 
 const Analytics = lazy(() => import('@/pages/Admin/Analytics/AnalyticsPage'))
-const AddTourType = lazy(
-  () => import('@/pages/Admin/AddTourType/AddTourTypePage')
-)
+const AddTourType = lazy(() => import('@/pages/Admin/TourType/TourTypePage'))
 
 export const adminSidebarItem: ISidebarItem[] = [
   {
@@ -21,7 +19,7 @@ export const adminSidebarItem: ISidebarItem[] = [
     title: 'Tour Management',
     items: [
       {
-        title: 'Add Tour Type',
+        title: 'Tour Type',
         route: '/admin/tour-types',
         component: AddTourType
       }
